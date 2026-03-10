@@ -1,0 +1,15 @@
+Options -Indexes
+RewriteEngine On
+
+# Servir les fichiers existants directement
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# URL avec slash final → fichier .html (rewrite interne, sans redirection)
+RewriteRule ^(.+)/$ $1.html [L]
+
+# URL sans extension → fichier .html
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]
+
+ErrorDocument 404 /404.html

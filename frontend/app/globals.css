@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #061525;
+    --primary-dark: #040d16;
+    --primary-light: #0a1f35;
+    --secondary: #f9c60b;
+    --secondary-dark: #d4a609;
+    --accent: #f8f9fa;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --background: #ffffff;
+    --foreground: #1a202c;
+    --border: #e2e8f0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    overflow-x: hidden;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold text-text-primary;
+    line-height: 1.2;
+  }
+
+  a {
+    @apply no-underline;
+    transition: color 0.2s ease;
+  }
+
+  button {
+    @apply cursor-pointer;
+    font-family: inherit;
+  }
+
+  img {
+    @apply max-w-full h-auto block;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-300 ease-in-out;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .stagger-1 {
+    animation-delay: 0.1s;
+  }
+
+  .stagger-2 {
+    animation-delay: 0.2s;
+  }
+
+  .stagger-3 {
+    animation-delay: 0.3s;
+  }
+
+  .stagger-4 {
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes partnersScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.partners-scroll {
+  animation: partnersScroll 30s linear infinite;
+}
+
+.partners-scroll:hover {
+  animation-play-state: paused;
+}

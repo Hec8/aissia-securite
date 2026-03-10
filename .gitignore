@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Laravel
+backend/.env
+backend/storage/app/private/
+backend/storage/framework/cache/
+backend/storage/framework/sessions/
+backend/storage/framework/views/
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/out.zip
+
+# Environment files
+
+
+# Misc
+.DS_Store
+*.log
+*.zip
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
