@@ -1,12 +1,32 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedSection, ScaleAnimation, } from '@/components/animations/AnimatedSection';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/technologies',
+        title: locale === 'fr' ? 'Technologies de sécurité - AISSIA SÉCURITÉ' : 'Security Technologies - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'AISSIA Guard et nos technologies de sécurité connectées pour la géolocalisation, l’alerte et la supervision en temps réel.'
+                : 'AISSIA Guard and our connected security technologies for geolocation, alerting and real-time supervision.',
+        keywords:
+            locale === 'fr'
+                ? ['technologie sécurité', 'application de sécurité', 'géolocalisation sécurité']
+                : ['security technology', 'security app', 'security geolocation'],
+    });
+}
 
 export default async function TechnologiesPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

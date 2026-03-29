@@ -1,12 +1,29 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { AnimatedSection, ScaleAnimation, StaggerContainer } from '@/components/ui';
 import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/about',
+        title: locale === 'fr' ? 'À propos - AISSIA SÉCURITÉ' : 'About - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Découvrez AISSIA SÉCURITÉ : notre mission, nos valeurs et notre expertise en sécurité privée, prévention des risques et protection rapprochée.'
+                : 'Discover AISSIA SECURITY: our mission, values and expertise in private security, risk prevention and close protection.',
+        keywords: locale === 'fr' ? ['entreprise de sécurité privée', 'mission sécurité', 'valeurs sécurité'] : ['private security company', 'security mission', 'security values'],
+    });
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

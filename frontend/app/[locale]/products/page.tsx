@@ -1,13 +1,33 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { AnimatedSection, ScaleAnimation, StaggerContainer } from '@/components/ui';
 import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Link from 'next/link';
 import Image from 'next/image';
 import { QuoteButton } from '@/components/ui/QuoteModal';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/products',
+        title: locale === 'fr' ? 'Produits et solutions de sécurité - AISSIA SÉCURITÉ' : 'Security Products and Solutions - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Découvrez nos produits et solutions de sécurité : équipements, dispositifs de surveillance et services complémentaires pour la protection de vos sites.'
+                : 'Discover our security products and solutions: equipment, surveillance systems and complementary services for site protection.',
+        keywords:
+            locale === 'fr'
+                ? ['produits de sécurité', 'équipements de surveillance', 'solutions de protection entreprise']
+                : ['security products', 'surveillance equipment', 'business protection solutions'],
+    });
+}
 
 export default async function ProductsPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

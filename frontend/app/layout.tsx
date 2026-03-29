@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { defaultMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "AISSIA SÉCURITÉ - Excellence en Sécurité Privée",
-  description: "AISSIA SÉCURITÉ, votre partenaire de confiance pour tous vos besoins en sécurité privée et formation professionnelle.",
-  keywords: "sécurité, sécurité privée, agent de sécurité, formation sécurité, gardiennage, AISSIA",
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,

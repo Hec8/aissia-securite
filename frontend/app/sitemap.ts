@@ -5,6 +5,7 @@ export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     const locales = ['fr', 'en'];
+    const now = new Date();
 
     const routes = [
         '',
@@ -14,17 +15,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/products',
         '/technologies',
         '/contact',
+        '/recrutement',
+        '/news',
+        '/legal/privacy',
+        '/legal/terms',
     ];
 
     const sitemap: MetadataRoute.Sitemap = [];
 
     locales.forEach((locale) => {
         routes.forEach((route) => {
+            const isHome = route === '';
+            const isHighIntent = ['/services', '/contact', '/training', '/recrutement'].includes(route);
+
             sitemap.push({
                 url: `${baseUrl}/${locale}${route}`,
-                lastModified: new Date(),
-                changeFrequency: route === '' || route === '/news' ? 'daily' : 'weekly',
-                priority: route === '' ? 1 : 0.8,
+                lastModified: now,
+                changeFrequency: route === '/news' ? 'daily' : isHome ? 'daily' : 'weekly',
+                priority: isHome ? 1 : isHighIntent ? 0.9 : 0.8,
             });
         });
     });

@@ -1,8 +1,25 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Container, AnimatedSection } from '@/components/ui';
 import { Locale } from '@/lib/i18n';
 import { translations } from '@/lib/translations';
+import { generatePageMetadata } from '@/lib/metadata';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/legal/terms',
+        title: locale === 'fr' ? 'Conditions d’utilisation - AISSIA SÉCURITÉ' : 'Terms of Use - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Consultez les conditions d’utilisation du site AISSIA SÉCURITÉ, les responsabilités et les règles applicables à nos services en ligne.'
+                : 'Read the AISSIA SECURITY website terms of use, responsibilities and applicable online service rules.',
+        keywords: locale === 'fr' ? ['conditions d’utilisation', 'mentions légales', 'conditions de service'] : ['terms of use', 'legal notice', 'service terms'],
+    });
+}
 
 export default async function TermsPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

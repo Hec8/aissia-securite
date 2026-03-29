@@ -1,10 +1,27 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Card, CardBody, Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Link from 'next/link';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/news',
+        title: locale === 'fr' ? 'Actualités sécurité - AISSIA SÉCURITÉ' : 'Security News - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Retrouvez les dernières actualités d’AISSIA SÉCURITÉ : conseils, prévention des risques et innovations en sécurité privée.'
+                : 'Read the latest AISSIA SECURITY news: tips, risk prevention and private security innovations.',
+        keywords: locale === 'fr' ? ['actualités sécurité', 'conseils sécurité', 'veille sécurité privée'] : ['security news', 'security tips', 'private security updates'],
+    });
+}
 
 export default async function NewsPage({ params }: { params: { locale: Locale } }) {
     const { locale } = params;

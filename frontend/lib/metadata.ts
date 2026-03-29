@@ -1,66 +1,193 @@
 import type { Metadata } from 'next';
 
+type SupportedLocale = 'fr' | 'en';
+
+type PageMetadataOptions = {
+    locale?: SupportedLocale;
+    path?: string;
+    title: string;
+    description: string;
+    keywords?: string[];
+    noIndex?: boolean;
+};
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const siteName = 'AISSIA SÉCURITÉ';
+const defaultOgImage = '/images/Whisk_6e32ef6726784ffaef04ff7fe96685e3dr.jpeg';
+
+const commonKeywordsByLocale: Record<SupportedLocale, string[]> = {
+    fr: [
+        'sécurité privée',
+        'agent de sécurité',
+        'gardiennage',
+        'surveillance',
+        'sécurité événementielle',
+        'sécurité entreprise',
+        'protection des biens',
+        'protection des personnes',
+        'formation sécurité',
+        'AISSIA Sécurité',
+        'Abidjan',
+        'Côte d’Ivoire',
+    ],
+    en: [
+        'private security',
+        'security guards',
+        'surveillance services',
+        'event security',
+        'corporate security',
+        'asset protection',
+        'professional security training',
+        'AISSIA Security',
+        'Abidjan',
+        'Ivory Coast',
+    ],
+};
+
+function sanitizePath(path: string): string {
+    if (!path || path === '/') return '';
+    return path.startsWith('/') ? path : `/${path}`;
+}
+
+function buildLocalizedUrl(locale: SupportedLocale, path: string): string {
+    return `${siteUrl}/${locale}${sanitizePath(path)}`;
+}
+
+function uniqueKeywords(locale: SupportedLocale, extraKeywords: string[] = []): string[] {
+    return [...new Set([...commonKeywordsByLocale[locale], ...extraKeywords])];
+}
+
+export function generatePageMetadata({
+    locale = 'fr',
+    path = '',
+    title,
+    description,
+    keywords = [],
+    noIndex = false,
+}: PageMetadataOptions): Metadata {
+    const canonicalUrl = buildLocalizedUrl(locale, path);
+    const frUrl = buildLocalizedUrl('fr', path);
+    const enUrl = buildLocalizedUrl('en', path);
+
+    return {
+        title,
+        description,
+        keywords: uniqueKeywords(locale, keywords),
+        alternates: {
+            canonical: canonicalUrl,
+            languages: {
+                fr: frUrl,
+                en: enUrl,
+                'x-default': frUrl,
+            },
+        },
+        openGraph: {
+            type: 'website',
+            locale: locale === 'fr' ? 'fr_FR' : 'en_US',
+            url: canonicalUrl,
+            siteName,
+            title,
+            description,
+            images: [
+                {
+                    url: defaultOgImage,
+                    width: 1200,
+                    height: 630,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [defaultOgImage],
+        },
+        robots: noIndex
+            ? {
+                  index: false,
+                  follow: false,
+                  googleBot: {
+                      index: false,
+                      follow: false,
+                      'max-video-preview': -1,
+                      'max-image-preview': 'large',
+                      'max-snippet': -1,
+                  },
+              }
+            : {
+                  index: true,
+                  follow: true,
+                  googleBot: {
+                      index: true,
+                      follow: true,
+                      'max-video-preview': -1,
+                      'max-image-preview': 'large',
+                      'max-snippet': -1,
+                  },
+              },
+    };
+}
+
+export function getOrganizationStructuredData(locale: SupportedLocale = 'fr') {
+    const companyDescription =
+        locale === 'fr'
+            ? 'Entreprise de sécurité privée et de formation professionnelle en Côte d’Ivoire.'
+            : 'Private security and professional training company in Ivory Coast.';
+
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'SecurityService',
+        name: siteName,
+        url: siteUrl,
+        logo: `${siteUrl}/logo/Variantes logo-03.png`,
+        image: `${siteUrl}${defaultOgImage}`,
+        description: companyDescription,
+        areaServed: 'CI',
+        telephone: ['+2252722261328', '+2250717512692', '+2250717508264', '+2250717509044'],
+        email: 'contact@aissia-securite.com',
+    };
+}
+
+export function getWebsiteStructuredData(locale: SupportedLocale = 'fr') {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: siteName,
+        url: siteUrl,
+        inLanguage: locale,
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: `${siteUrl}/${locale}/news?q={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+        },
+    };
+}
+
 export function generateMetadata(
     title: string,
     description: string,
     locale: string = 'fr'
 ): Metadata {
-    const siteName = 'AISSIA SÉCURITÉ';
-    const fullTitle = `${title} | ${siteName}`;
-
-    return {
-        title: fullTitle,
+    return generatePageMetadata({
+        locale: locale === 'en' ? 'en' : 'fr',
+        title: `${title} | ${siteName}`,
         description,
-        keywords: 'sécurité, sécurité privée, agent de sécurité, formation sécurité, gardiennage, surveillance, AISSIA',
-        authors: [{ name: siteName }],
-        openGraph: {
-            title: fullTitle,
-            description,
-            siteName,
-            locale: locale === 'fr' ? 'fr_FR' : 'en_US',
-            type: 'website',
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: fullTitle,
-            description,
-        },
-        robots: {
-            index: true,
-            follow: true,
-            googleBot: {
-                index: true,
-                follow: true,
-                'max-video-preview': -1,
-                'max-image-preview': 'large',
-                'max-snippet': -1,
-            },
-        },
-    };
+    });
 }
 
 export const defaultMetadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    metadataBase: new URL(siteUrl),
     title: {
         default: 'AISSIA SÉCURITÉ - Excellence en Sécurité Privée',
         template: '%s | AISSIA SÉCURITÉ',
     },
     description: 'AISSIA SÉCURITÉ, votre partenaire de confiance pour tous vos besoins en sécurité privée et formation professionnelle.',
     applicationName: 'AISSIA SÉCURITÉ',
-    keywords: [
-        'sécurité',
-        'sécurité privée',
-        'agent de sécurité',
-        'formation sécurité',
-        'gardiennage',
-        'surveillance',
-        'protection',
-        'sécurité événementielle',
-        'AISSIA',
-    ],
-    authors: [{ name: 'AISSIA SÉCURITÉ' }],
-    creator: 'AISSIA SÉCURITÉ',
-    publisher: 'AISSIA SÉCURITÉ',
+    keywords: uniqueKeywords('fr'),
+    authors: [{ name: siteName }],
+    creator: siteName,
+    publisher: siteName,
     formatDetection: {
         email: false,
         address: false,
@@ -69,14 +196,24 @@ export const defaultMetadata: Metadata = {
     openGraph: {
         type: 'website',
         locale: 'fr_FR',
-        siteName: 'AISSIA SÉCURITÉ',
+        siteName,
         title: 'AISSIA SÉCURITÉ - Excellence en Sécurité Privée',
         description: 'Votre partenaire de confiance pour tous vos besoins en sécurité privée et formation professionnelle.',
+        url: siteUrl,
+        images: [
+            {
+                url: defaultOgImage,
+                width: 1200,
+                height: 630,
+                alt: 'AISSIA SÉCURITÉ',
+            },
+        ],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'AISSIA SÉCURITÉ',
         description: 'Excellence en Sécurité Privée',
+        images: [defaultOgImage],
     },
     robots: {
         index: true,

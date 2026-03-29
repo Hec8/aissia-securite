@@ -1,12 +1,32 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedSection, ScaleAnimation, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/services',
+        title: locale === 'fr' ? 'Services de sécurité privée - AISSIA SÉCURITÉ' : 'Private Security Services - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Nos services de sécurité : gardiennage, surveillance, contrôle d’accès, sécurité événementielle et protection des sites sensibles.'
+                : 'Our security services: guarding, surveillance, access control, event security and sensitive site protection.',
+        keywords:
+            locale === 'fr'
+                ? ['gardiennage professionnel', 'contrôle d’accès', 'sécurité événementielle Abidjan', 'surveillance de site']
+                : ['professional guarding', 'access control', 'event security Abidjan', 'site surveillance'],
+    });
+}
 
 export default async function ServicesPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

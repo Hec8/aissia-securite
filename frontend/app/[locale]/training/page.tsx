@@ -1,13 +1,33 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import DocsExpandable from '@/components/ui/DocsExpandable';
 import { AnimatedSection, ScaleAnimation, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/training',
+        title: locale === 'fr' ? 'Formation en sécurité professionnelle - AISSIA SÉCURITÉ' : 'Professional Security Training - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Formations qualifiantes en sécurité privée : techniques d’intervention, prévention des risques, sécurité incendie et préparation métier.'
+                : 'Professional security training: intervention techniques, risk prevention, fire safety and operational readiness.',
+        keywords:
+            locale === 'fr'
+                ? ['formation agent de sécurité', 'formation sécurité incendie', 'centre de formation sécurité']
+                : ['security guard training', 'fire safety training', 'security training center'],
+    });
+}
 
 export default async function TrainingPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

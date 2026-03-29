@@ -1,8 +1,25 @@
 import { Header, Footer } from '@/components/layout';
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/sections';
 import { Container, AnimatedSection } from '@/components/ui';
 import { Locale } from '@/lib/i18n';
 import { translations } from '@/lib/translations';
+import { generatePageMetadata } from '@/lib/metadata';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '/legal/privacy',
+        title: locale === 'fr' ? 'Politique de confidentialité - AISSIA SÉCURITÉ' : 'Privacy Policy - AISSIA SECURITY',
+        description:
+            locale === 'fr'
+                ? 'Consultez la politique de confidentialité d’AISSIA SÉCURITÉ concernant la collecte, l’usage et la protection de vos données personnelles.'
+                : 'Read the AISSIA SECURITY privacy policy about personal data collection, usage and protection.',
+        keywords: locale === 'fr' ? ['politique de confidentialité', 'protection des données', 'RGPD sécurité'] : ['privacy policy', 'data protection', 'personal data'],
+    });
+}
 
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;

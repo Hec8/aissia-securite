@@ -1,20 +1,44 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import { Header, Footer } from '@/components/layout';
 import { Button, Container } from '@/components/ui';
 import { QuoteButton } from '@/components/ui/QuoteModal';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
+import { generatePageMetadata, getOrganizationStructuredData, getWebsiteStructuredData } from '@/lib/metadata';
 import { AnimatedSection, ScaleAnimation, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
 import HomeContactForm from '@/components/sections/HomeContactForm';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+    const { locale } = await params;
+
+    return generatePageMetadata({
+        locale,
+        path: '',
+        title: locale === 'fr' ? 'AISSIA SÉCURITÉ - Services de sécurité privée à Abidjan' : 'AISSIA SECURITY - Private Security Services in Abidjan',
+        description:
+            locale === 'fr'
+                ? 'AISSIA SÉCURITÉ propose des services de gardiennage, surveillance, formation sécurité et solutions de protection pour entreprises et particuliers en Côte d’Ivoire.'
+                : 'AISSIA SECURITY provides guarding, surveillance, security training and protection services for businesses and individuals in Ivory Coast.',
+        keywords:
+            locale === 'fr'
+                ? ['entreprise de sécurité Abidjan', 'gardiennage Abidjan', 'service de sécurité Côte d’Ivoire']
+                : ['security company Abidjan', 'guarding services Ivory Coast', 'security solutions Abidjan'],
+    });
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;
     const t = translations[locale] ?? translations['fr'];
+    const organizationSchema = getOrganizationStructuredData(locale);
+    const websiteSchema = getWebsiteStructuredData(locale);
 
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
             <Header />
             <ParticleNetwork />
             <main className="overflow-x-hidden">
