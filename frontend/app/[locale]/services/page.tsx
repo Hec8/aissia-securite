@@ -5,7 +5,7 @@ import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
-import { generatePageMetadata } from '@/lib/metadata';
+import { generatePageMetadata, getBreadcrumbStructuredData, getFaqStructuredData } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedSection, ScaleAnimation, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
@@ -31,6 +31,33 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function ServicesPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;
     const t = translations[locale];
+    const faqSchema = getFaqStructuredData(locale, [
+        {
+            question: locale === 'fr' ? 'Quels services de sécurité privée propose AISSIA ?' : 'What private security services does AISSIA provide?',
+            answer:
+                locale === 'fr'
+                    ? 'AISSIA propose le gardiennage, la surveillance de sites, la sécurité événementielle, le contrôle d’accès et le conseil en sécurité.'
+                    : 'AISSIA provides guarding, site surveillance, event security, access control and security consulting.',
+        },
+        {
+            question: locale === 'fr' ? 'Intervenez-vous en Côte d’Ivoire ?' : 'Do you operate in Ivory Coast?',
+            answer:
+                locale === 'fr'
+                    ? 'Oui, nos équipes interviennent en Côte d’Ivoire, notamment à Abidjan et dans les zones d’activité prioritaires.'
+                    : 'Yes, our teams operate across Ivory Coast, especially in Abidjan and priority business areas.',
+        },
+        {
+            question: locale === 'fr' ? 'Comment obtenir un devis sécurité ?' : 'How can I request a security quote?',
+            answer:
+                locale === 'fr'
+                    ? 'Vous pouvez faire une demande de devis depuis le site via le formulaire de contact ou le bouton de demande de devis.'
+                    : 'You can request a quote from the website through the contact form or quote request button.',
+        },
+    ]);
+    const breadcrumbSchema = getBreadcrumbStructuredData(locale, [
+        { name: locale === 'fr' ? 'Accueil' : 'Home', path: '' },
+        { name: locale === 'fr' ? 'Services' : 'Services', path: '/services' },
+    ]);
 
     const serviceImages = [
         '/images/Whisk_5b6a220cce09155b41b4433c57706c64dr.jpeg',
@@ -48,6 +75,8 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
 
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <Header />
             <ParticleNetwork />
             <main>

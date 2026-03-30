@@ -5,7 +5,7 @@ import { Container } from '@/components/ui';
 import { ParticleNetwork } from '@/components/ui/ParticleNetwork';
 import { translations } from '@/lib/translations';
 import { Locale } from '@/lib/i18n';
-import { generatePageMetadata } from '@/lib/metadata';
+import { generatePageMetadata, getBreadcrumbStructuredData, getFaqStructuredData } from '@/lib/metadata';
 import Image from 'next/image';
 import Link from 'next/link';
 import DocsExpandable from '@/components/ui/DocsExpandable';
@@ -32,6 +32,33 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function TrainingPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;
     const t = translations[locale];
+    const faqSchema = getFaqStructuredData(locale, [
+        {
+            question: locale === 'fr' ? 'À qui s’adressent les formations en sécurité ?' : 'Who are the security training programs for?',
+            answer:
+                locale === 'fr'
+                    ? 'Nos formations s’adressent aux candidats souhaitant devenir agents de sécurité ainsi qu’aux professionnels en perfectionnement.'
+                    : 'Our programs are designed for future security guards and professionals seeking advanced training.',
+        },
+        {
+            question: locale === 'fr' ? 'Quels modules de formation proposez-vous ?' : 'Which training modules are available?',
+            answer:
+                locale === 'fr'
+                    ? 'Les modules incluent la prévention des risques, la sécurité incendie, la gestion des incidents et les techniques opérationnelles terrain.'
+                    : 'Modules include risk prevention, fire safety, incident management and operational field techniques.',
+        },
+        {
+            question: locale === 'fr' ? 'Comment s’inscrire à une formation ?' : 'How can I enroll in a training program?',
+            answer:
+                locale === 'fr'
+                    ? 'Vous pouvez nous contacter via le site pour recevoir les critères d’admission, le calendrier et le dossier d’inscription.'
+                    : 'Contact us through the website to receive admission criteria, schedule and registration details.',
+        },
+    ]);
+    const breadcrumbSchema = getBreadcrumbStructuredData(locale, [
+        { name: locale === 'fr' ? 'Accueil' : 'Home', path: '' },
+        { name: locale === 'fr' ? 'Formation' : 'Training', path: '/training' },
+    ]);
 
     const moduleImages = [
         '/images/Whisk_935eee3760f5b579dc6493b3f649dd4cdr.jpeg',
@@ -51,6 +78,8 @@ export default async function TrainingPage({ params }: { params: Promise<{ local
 
     return (
         <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <Header />
             <ParticleNetwork />
             <main>

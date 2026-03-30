@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Locale } from '@/lib/i18n';
-import { generatePageMetadata } from '@/lib/metadata';
+import { generatePageMetadata, getBreadcrumbStructuredData, getFaqStructuredData } from '@/lib/metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
     const { locale } = await params;
@@ -20,6 +20,40 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
     });
 }
 
-export default function ContactLayout({ children }: { children: React.ReactNode }) {
-    return children;
+export default async function ContactLayout({
+    children,
+    params,
+}: {
+    children: React.ReactNode;
+    params: Promise<{ locale: Locale }>;
+}) {
+    const { locale } = await params;
+    const faqSchema = getFaqStructuredData(locale, [
+        {
+            question: locale === 'fr' ? 'Comment contacter AISSIA SÉCURITÉ rapidement ?' : 'How can I quickly contact AISSIA SECURITY?',
+            answer:
+                locale === 'fr'
+                    ? 'Vous pouvez nous écrire via le formulaire de contact, par email ou par téléphone pour une réponse rapide.'
+                    : 'You can contact us through the contact form, email or phone for a fast response.',
+        },
+        {
+            question: locale === 'fr' ? 'Puis-je demander un devis personnalisé ?' : 'Can I request a custom quote?',
+            answer:
+                locale === 'fr'
+                    ? 'Oui, nous proposons des devis personnalisés selon votre activité, votre site et vos contraintes de sécurité.'
+                    : 'Yes, we provide custom quotes based on your business, site and security requirements.',
+        },
+    ]);
+    const breadcrumbSchema = getBreadcrumbStructuredData(locale, [
+        { name: locale === 'fr' ? 'Accueil' : 'Home', path: '' },
+        { name: locale === 'fr' ? 'Contact' : 'Contact', path: '/contact' },
+    ]);
+
+    return (
+        <>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            {children}
+        </>
+    );
 }

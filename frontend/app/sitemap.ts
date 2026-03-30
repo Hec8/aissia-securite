@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
     const locales = ['fr', 'en'];
     const now = new Date();
 
@@ -28,8 +28,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
             const isHome = route === '';
             const isHighIntent = ['/services', '/contact', '/training', '/recrutement'].includes(route);
 
+            const pageUrl = new URL(`/${locale}${route}`, `${baseUrl}/`).toString();
+
             sitemap.push({
-                url: `${baseUrl}/${locale}${route}`,
+                url: pageUrl,
                 lastModified: now,
                 changeFrequency: route === '/news' ? 'daily' : isHome ? 'daily' : 'weekly',
                 priority: isHome ? 1 : isHighIntent ? 0.9 : 0.8,
@@ -37,5 +39,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
         });
     });
 
-    return sitemap;
+    return sitemap.filter((entry) => Boolean(entry.url));
 }

@@ -17,15 +17,23 @@ const defaultOgImage = '/images/Whisk_6e32ef6726784ffaef04ff7fe96685e3dr.jpeg';
 
 const commonKeywordsByLocale: Record<SupportedLocale, string[]> = {
     fr: [
+        'securite privee',
         'sécurité privée',
+        'societe de securite',
+        'entreprise de sécurité',
         'agent de sécurité',
         'gardiennage',
+        'gardiennage abidjan',
         'surveillance',
+        'surveillance de site',
+        'securite cote d ivoire',
+        'sécurité côte d’ivoire',
         'sécurité événementielle',
         'sécurité entreprise',
         'protection des biens',
         'protection des personnes',
         'formation sécurité',
+        'formation agent de sécurité',
         'AISSIA Sécurité',
         'Abidjan',
         'Côte d’Ivoire',
@@ -161,6 +169,41 @@ export function getWebsiteStructuredData(locale: SupportedLocale = 'fr') {
             target: `${siteUrl}/${locale}/news?q={search_term_string}`,
             'query-input': 'required name=search_term_string',
         },
+    };
+}
+
+export function getFaqStructuredData(
+    locale: SupportedLocale,
+    questions: Array<{ question: string; answer: string }>
+) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        inLanguage: locale,
+        mainEntity: questions.map((item) => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer,
+            },
+        })),
+    };
+}
+
+export function getBreadcrumbStructuredData(
+    locale: SupportedLocale,
+    items: Array<{ name: string; path: string }>
+) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: items.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: item.name,
+            item: buildLocalizedUrl(locale, item.path),
+        })),
     };
 }
 
