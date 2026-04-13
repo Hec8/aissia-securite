@@ -28,7 +28,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
             const isHome = route === '';
             const isHighIntent = ['/services', '/contact', '/training', '/recrutement'].includes(route);
 
-            const pageUrl = new URL(`/${locale}${route}`, `${baseUrl}/`).toString();
+            const routePath = isHome ? `/${locale}/` : `/${locale}${route}/`;
+            const pageUrl = new URL(routePath, `${baseUrl}/`).toString();
 
             sitemap.push({
                 url: pageUrl,

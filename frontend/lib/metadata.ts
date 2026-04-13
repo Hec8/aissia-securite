@@ -11,7 +11,7 @@ type PageMetadataOptions = {
     noIndex?: boolean;
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
 const siteName = 'AISSIA SÉCURITÉ';
 const defaultOgImage = '/images/Whisk_6e32ef6726784ffaef04ff7fe96685e3dr.jpeg';
 
@@ -53,8 +53,12 @@ const commonKeywordsByLocale: Record<SupportedLocale, string[]> = {
 };
 
 function sanitizePath(path: string): string {
-    if (!path || path === '/') return '';
-    return path.startsWith('/') ? path : `/${path}`;
+    if (!path || path === '/') return '/';
+
+    const prefixedPath = path.startsWith('/') ? path : `/${path}`;
+    const pathWithoutTrailingSlash = prefixedPath.replace(/\/+$/, '');
+
+    return `${pathWithoutTrailingSlash}/`;
 }
 
 function buildLocalizedUrl(locale: SupportedLocale, path: string): string {

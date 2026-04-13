@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Locale } from '@/lib/i18n';
 import { generatePageMetadata, getBreadcrumbStructuredData, getFaqStructuredData } from '@/lib/metadata';
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
+    const normalizedLocale = locale === 'en' ? 'en' : 'fr';
 
     return generatePageMetadata({
-        locale,
+        locale: normalizedLocale,
         path: '/recrutement',
         title: locale === 'fr' ? 'Recrutement sécurité - AISSIA SÉCURITÉ' : 'Security Recruitment - AISSIA SECURITY',
         description:
@@ -25,10 +25,12 @@ export default async function RecruitmentLayout({
     params,
 }: {
     children: React.ReactNode;
-    params: Promise<{ locale: Locale }>;
+    params: Promise<{ locale: string }>;
 }) {
     const { locale } = await params;
-    const faqSchema = getFaqStructuredData(locale, [
+    const normalizedLocale = locale === 'en' ? 'en' : 'fr';
+
+    const faqSchema = getFaqStructuredData(normalizedLocale, [
         {
             question: locale === 'fr' ? 'Comment postuler aux offres de sécurité ?' : 'How can I apply for security jobs?',
             answer:
@@ -44,7 +46,7 @@ export default async function RecruitmentLayout({
                     : 'We are looking for motivated profiles for private security, surveillance and field operations roles.',
         },
     ]);
-    const breadcrumbSchema = getBreadcrumbStructuredData(locale, [
+    const breadcrumbSchema = getBreadcrumbStructuredData(normalizedLocale, [
         { name: locale === 'fr' ? 'Accueil' : 'Home', path: '' },
         { name: locale === 'fr' ? 'Recrutement' : 'Recruitment', path: '/recrutement' },
     ]);

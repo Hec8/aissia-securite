@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Locale } from '@/lib/i18n';
 import { generatePageMetadata, getBreadcrumbStructuredData, getFaqStructuredData } from '@/lib/metadata';
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
+    const normalizedLocale = locale === 'en' ? 'en' : 'fr';
 
     return generatePageMetadata({
-        locale,
+        locale: normalizedLocale,
         path: '/contact',
         title: locale === 'fr' ? 'Contact AISSIA SÉCURITÉ - Demande de devis sécurité' : 'Contact AISSIA SECURITY - Request a Security Quote',
         description:
@@ -25,10 +25,12 @@ export default async function ContactLayout({
     params,
 }: {
     children: React.ReactNode;
-    params: Promise<{ locale: Locale }>;
+    params: Promise<{ locale: string }>;
 }) {
     const { locale } = await params;
-    const faqSchema = getFaqStructuredData(locale, [
+    const normalizedLocale = locale === 'en' ? 'en' : 'fr';
+
+    const faqSchema = getFaqStructuredData(normalizedLocale, [
         {
             question: locale === 'fr' ? 'Comment contacter AISSIA SÉCURITÉ rapidement ?' : 'How can I quickly contact AISSIA SECURITY?',
             answer:
@@ -44,7 +46,7 @@ export default async function ContactLayout({
                     : 'Yes, we provide custom quotes based on your business, site and security requirements.',
         },
     ]);
-    const breadcrumbSchema = getBreadcrumbStructuredData(locale, [
+    const breadcrumbSchema = getBreadcrumbStructuredData(normalizedLocale, [
         { name: locale === 'fr' ? 'Accueil' : 'Home', path: '' },
         { name: locale === 'fr' ? 'Contact' : 'Contact', path: '/contact' },
     ]);
